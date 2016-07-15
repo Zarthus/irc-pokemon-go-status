@@ -70,8 +70,8 @@ module GoBot
         Format(:red, 'unavailable')
       end
 
-      def announce?(exit_code)
-        @announce.include?(exit_code) || !EXIT_CODE_RANGE.include?(exit_code)
+      def announce?(exit_code, check_last = true)
+        (check_last && announce?(@last_check[:exit_code], false)) && (@announce.include?(exit_code) || !EXIT_CODE_RANGE.include?(exit_code))
       end
     end
   end
