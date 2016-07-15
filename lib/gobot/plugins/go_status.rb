@@ -52,6 +52,7 @@ module GoBot
         send_cb = status[:exit_code] != @last_check[:exit_code] && announce?(status[:exit_code])
         @last_check = status
         on_status_change if send_cb
+        log fmt_status(@last_check)
       end
 
       def fmt_status(h)
