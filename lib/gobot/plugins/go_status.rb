@@ -72,7 +72,7 @@ module GoBot
       end
 
       def announce?(exit_code, check_last = true)
-        (check_last && announce?(@last_check[:exit_code], false)) && (@announce.include?(exit_code) || !EXIT_CODE_RANGE.include?(exit_code))
+        (check_last && announce?(@last_check[:exit_code], false) || !check_last) && (@announce.include?(exit_code) || !EXIT_CODE_RANGE.include?(exit_code))
       end
     end
   end
