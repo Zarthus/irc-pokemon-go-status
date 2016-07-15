@@ -55,7 +55,7 @@ module GoBot
       end
 
       def fmt_status(h)
-        "[#{fmt_exit_code(h[:exit_code])}] #{fmt_available(h[:available])} - average response time: #{h[:avg_ms]}ms"
+        "[#{fmt_exit_code(h[:exit_code])}] #{fmt_available(h[:available])} - response time: #{h[:avg_ms]}ms"
       end
 
       def fmt_exit_code(exit_code)
