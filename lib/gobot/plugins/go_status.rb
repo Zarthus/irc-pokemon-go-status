@@ -60,7 +60,7 @@ module GoBot
       end
 
       def fmt_exit_code(exit_code)
-        return Format(:green, 'up') if exit_code == EXIT_CODE_UP
+        return Format(:green, ' up ') if exit_code == EXIT_CODE_UP
         return Format(:orange, 'slow') if exit_code == EXIT_CODE_SLOW
         return Format(:red, 'down') if exit_code == EXIT_CODE_DOWN
         Format(:grey, "error #{exit_code}")
