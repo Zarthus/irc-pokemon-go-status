@@ -3,11 +3,16 @@ require 'melonsmasher/pokemon-go-status'
 module GoBot
   module Plugin
     class GoStatus
+      EXIT_CODE_UP = 0
+      EXIT_CODE_SLOW = 1
+      EXIT_CODE_DOWN = 2
+      EXIT_CODE_RANGE = (EXIT_CODE_UP..EXIT_CODE_DOWN)
+
       include Cinch::Plugin
 
       def initialize(*args)
         super
-
+        @announce = [EXIT_CODE_UP, EXIT_CODE_DOWN]
         @last_check = {exit_code: -1}
         @chans = []
         @bot.config.channels.each do |chan|
@@ -44,7 +49,7 @@ module GoBot
           return
         end
 
-        send_cb = status[:exit_code] != @last_check[:exit_code]
+        send_cb = status[:exit_code] != @last_check[:exit_code] && announce?(status[:exit_code])
         @last_check = status
         on_status_change if send_cb
       end
@@ -63,6 +68,10 @@ module GoBot
       def fmt_available(avl)
         return Format(:green, 'available') if avl
         Format(:red, 'unavailable')
+      end
+
+      def announce?(exit_code)
+        @announce.include?(exit_code) || !EXIT_CODE_RANGE.include?(exit_code)
       end
     end
   end
