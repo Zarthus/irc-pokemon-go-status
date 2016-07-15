@@ -3,7 +3,7 @@ irc:
   server_password:
   port: 6697
   ssl: true
-  ssl_verify: false
+  ssl_verify: true 
   bind:
   umodes:
 
@@ -24,4 +24,4 @@ irc:
 
 logging: true
 prefix: "!"
-source_url: "https://github.com/zarthus/pokemongo-status-irc-bot"
+source_url: "https://github.com/zarthus/irc-pokemon-go-status"
