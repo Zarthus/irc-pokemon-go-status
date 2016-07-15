@@ -1,0 +1,27 @@
+irc:
+  server: "irc.example.org"
+  server_password:
+  port: 6697
+  ssl: true
+  ssl_verify: false
+  bind:
+  umodes:
+
+  realname: "Pokémon Go Status"
+  username: "gostatus"
+  nick: "gostatus"
+
+  auth:
+    cert:
+      client_cert:
+
+    sasl:
+      account:
+      password:
+
+  channels:
+    - "#pokemongo-channel"
+
+logging: true
+prefix: "!"
+source_url: "https://github.com/zarthus/pokemongo-status-irc-bot"
