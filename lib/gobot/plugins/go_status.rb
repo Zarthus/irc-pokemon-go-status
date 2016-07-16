@@ -21,7 +21,7 @@ module GoBot
         Timer(10, method: :check_status, shots: 1)
       end
   
-      timer 60, method: :check_status
+      timer 120, method: :check_status
  
       match Regexp.new('gostatus'), method: :cmd_status
       def cmd_status(m)
@@ -41,7 +41,7 @@ module GoBot
           status = pg.get_server_status
         rescue StandardError => e
           info e.to_s
-          return
+          status = {exit_code: 'http', reason: e.class.name, avg_ms: -1, available: false}
         end
 
         if try_again && status[:exit_code] == 3
@@ -56,7 +56,9 @@ module GoBot
       end
 
       def fmt_status(h)
-        "[#{fmt_exit_code(h[:exit_code])}] #{fmt_available(h[:available])} - response time: #{h[:avg_ms]}ms"
+        ms = h[:avg_ms].nil? ? 'unknown' : "#{h[:avg_ms]}ms"
+        append = h.key?(:reason) ? ' - error reason: ' + h[:reason] : ''
+        "[#{fmt_exit_code(h[:exit_code])}] #{fmt_available(h[:available])} - response time: #{ms}#{append}"
       end
 
       def fmt_exit_code(exit_code)
@@ -72,7 +74,8 @@ module GoBot
       end
 
       def announce?(exit_code, check_last = true)
-        (check_last && announce?(@last_check[:exit_code], false) || !check_last) && (@announce.include?(exit_code) || !EXIT_CODE_RANGE.include?(exit_code))
+        @last_check[:exit_code] != EXIT_CODE_SLOW && exit_code != EXIT_CODE_SLOW
+        # (check_last && announce?(@last_check[:exit_code], false) || !check_last) && (@announce.include?(exit_code) || !EXIT_CODE_RANGE.include?(exit_code))
       end
     end
   end
