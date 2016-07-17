@@ -12,6 +12,8 @@ module GoBot
 
       def initialize(*args)
         super
+        @reporting = false
+        @report_next = false
         @announce = [EXIT_CODE_UP, EXIT_CODE_DOWN]
         @last_check = {exit_code: -1}
         @chans = []
@@ -28,10 +30,27 @@ module GoBot
         m.reply(fmt_status(@last_check))
       end
 
+      match Regexp.new('goalert'), method: :cmd_report_next
+      def cmd_report_next(m)
+        if @reporting
+          m.reply("Continuous reporting is enabled, cannot do one time reports.")
+          return
+        end
+
+        m.reply("I will report when the status changes.")
+        @report_next = true
+      end
+
       def on_status_change
-        status = fmt_status(@last_check)
-        @chans.each do |c|
-          Channel(c).send(status)
+        if @reporting || @report_next
+          status = fmt_status(@last_check)
+          @chans.each do |c|
+            Channel(c).send(status)
+          end
+
+          if @report_next
+            @report_next = false
+          end
         end
       end
 
@@ -41,7 +60,7 @@ module GoBot
           status = pg.get_server_status
         rescue StandardError => e
           info e.to_s
-          status = {exit_code: 'http', reason: e.class.name, avg_ms: -1, available: false}
+          status = {exit_code: EXIT_CODE_DOWN, reason: e.class.name, avg_ms: -1, available: false}
         end
 
         if try_again && status[:exit_code] == 3
